@@ -8,6 +8,7 @@ import { faCaretDown, faCaretUp } from '@fortawesome/free-solid-svg-icons'
 import {
   fetchConfigAsync,
   selectStatus,
+  selectAvailableTickers,
 } from './tickerTableSlice';
 
 import {
@@ -105,6 +106,7 @@ export function TickerTable() {
 
   const tickers = useSelector(selectTickers);
   const status = useSelector(selectStatus);
+  const availableTickers = useSelector(selectAvailableTickers);
 
   useEffect(() => {
     dispatch(fetchConfigAsync());
@@ -126,17 +128,33 @@ export function TickerTable() {
   }, [filterText]);
 
   function transformTickerData(tickers, filterText) {
-    return tickers.map((ticker, index) => {
-      const lastTradeDate = new Date(Number(ticker.lastTrade));
-      return {
-        id: index + 1,
-        ticker: ticker.ticker.toUpperCase(),
-        price: ticker.price,
-        percentDelta: ticker.percentDelta,
-        volume: ticker.volume,
-        lastTrade: lastTradeDate.toLocaleString(),
+    const tickerData = [];
+
+    availableTickers.forEach((availableTicker) => {
+      const existingTicker = tickers.find((tickerObj) => tickerObj.ticker === availableTicker);
+
+      if (existingTicker) {
+        const lastTradeDate = new Date(Number(existingTicker.lastTrade));
+        tickerData.push({
+          id: existingTicker.ticker,
+          ticker: existingTicker.ticker.toUpperCase(),
+          price: existingTicker.price,
+          percentDelta: existingTicker.percentDelta,
+          volume: existingTicker.volume,
+          lastTrade: lastTradeDate.toLocaleString(),
+        });
       }
-    }).filter((ticker) => ticker.ticker && ticker.ticker.includes(filterText.toUpperCase()));
+      else {
+        tickerData.push({
+          ticker: availableTicker.toUpperCase(),
+          price: '',
+          percentDelta: '',
+          volume: ''
+        });
+      }
+    });
+
+    return tickerData.filter((ticker) => ticker.ticker && ticker.ticker.includes(filterText.toUpperCase()));
   }
 
   if (status === 'loading') { return <div>Loading...</div>; }
