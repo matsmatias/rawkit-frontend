@@ -41,6 +41,7 @@ export function ExchangeSelector() {
 
   return (
     <div className="exchangeSelector">
+      <span className={styles.exchangeSelectText}>Toggle enabled exchanges:</span>
       { availableExchanges.map((exchange, index) => {
           return (
             <Button
