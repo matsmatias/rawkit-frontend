@@ -35,7 +35,7 @@ const ClearButton = styled(Button)`
 
 export const Filter = ({ filterText, onFilter, onClear }) => (
   <div className="tickerFilter" style={{marginBottom: '2em'}}>
-    <TextField id="search" type="text" placeholder="Filter by Ticker" aria-label="Search Input" value={filterText} onChange={onFilter} />
+    <TextField id="search" type="text" placeholder="Filter by Ticker" aria-label="Search Input" autoComplete="off" value={filterText} onChange={onFilter} />
     <ClearButton type="button" onClick={onClear}>X</ClearButton>
   </div>
 );
